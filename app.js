@@ -1,18 +1,33 @@
+const paper = document.getElementById('paper');
+const rock = document.getElementById('rock');
+const scissors = document.getElementById('scissors');
+const result = document.getElementById('result');
+const reset = document.getElementById('reset');
+
+let humanScore = 0;
+let computerScore = 0;
+const updateResult = (message = '') => {
+  result.textContent = `Score: You ${humanScore} - Computer ${computerScore}\n${message}`;
+}
+
+const resetGame = () => {
+  humanScore = 0;
+  computerScore = 0;
+  updateResult("Game reset. Let's play!");
+}
+
+
+
 const getComputerChoice = () => {
   const choices = ['rock','paper', 'scissors'];
   const randomIndex = Math.floor(Math.random() * choices.length);
   return choices[randomIndex];
 }
 
-
 const getHumanChoice = () => {
   const choices = prompt("Enter your choice (rock, paper, scissors): ").toLowerCase();
   return choices;
 }
-
-
-let humanScore = 0;
-let computerScore = 0;
 
 const  playRound = (humanChoice, computerChoice) => {
   if (humanChoice === computerChoice) {
@@ -22,34 +37,43 @@ const  playRound = (humanChoice, computerChoice) => {
     (humanChoice === 'paper' && computerChoice === 'rock') ||
     (humanChoice === 'scissors' && computerChoice === 'paper')
   ) {
-    console.log(`You win this round! ${humanChoice} beats ${computerChoice}`);
     humanScore++;
+    updateResult(`You win this round! ${humanChoice} beats ${computerChoice}`);
   } else {
-    console.log(`You lose! ${computerChoice} beats ${humanChoice}`);
-    computerScore++;
+    computerScore++;  
+    updateResult(`You lose this round! ${computerChoice} beats ${humanChoice}`);
   }
+
+  if (humanScore === 5) {
+    updateResult(`Score: You ${humanScore} - Computer ${computerScore}\nYou Win the Game!`);
+  } else if (computerScore === 5) {
+    updateResult(`Score: You ${humanScore} - Computer ${computerScore}\nYou Lose the Game!`);
+  }
+  
   
 }
 
-const playGame = () => {
-  for (let i = 0; i < 5; i++) {
-    console.log(`\nRound ${i + 1}`);
-    const computerChoice = getComputerChoice();
-    const humanChoice = getHumanChoice();
-    playRound(humanChoice, computerChoice);
-    playRound();
-    console.log(`Score: You ${humanScore} - Computer ${computerScore}`);
+const handelClick = (choice) => {
+  if (humanScore >= 5 || computerScore >= 5) {
+    return;
   }
+
+  const computerChoice = getComputerChoice();
+  playRound(choice, computerChoice);
 }
 
-console.log('\nFinal Results:');
-if(humanScore > computerScore) {
-  console.log('You win the game!');
-} else if (humanScore < computerScore) {
-  console.log('You lose the game!');
-}
-else {
-  console.log('The game is a tie!');
-};
 
-playGame();
+
+
+
+paper.addEventListener('click',() => handelClick('paper'));
+
+rock.addEventListener('click', () => handelClick('rock'));
+
+scissors.addEventListener('click', () => handelClick('scissors'));
+
+reset.addEventListener('click', resetGame);
+
+
+updateResult("First to 5 wins!");
+
